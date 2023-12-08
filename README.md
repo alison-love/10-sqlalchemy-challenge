@@ -17,3 +17,5 @@ Flask Web Application
 Access
 - Jupyter Notebooks can be viewed for data analysis insights.
 - Access the API at http://127.0.0.1:5000/ after running the Flask app.
+- Copy the route onto the end of the base URL to access endpoint data.
+- In the case of first and first/last, change the placeholders to dates in YYYY-MM-DD format.
