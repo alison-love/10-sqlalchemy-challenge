@@ -1,3 +1,5 @@
+# import dependencies
+
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
@@ -5,16 +7,19 @@ from flask import Flask, jsonify
 import datetime as dt
 import numpy as np
 
-# Set up the database
+# set up the database
+
 engine = create_engine('sqlite:///hawaii.sqlite')
 Base = automap_base()
 Base.prepare(autoload_with=engine)
 
-# Map the tables
+# map the tables
+
 station = Base.classes.station
 measurement = Base.classes.measurement
 
 # Flask setup
+
 app = Flask(__name__)
 
 def calculate_one_year_ago(session):
@@ -28,7 +33,8 @@ def get_most_active_station_id(session):
                   .order_by(func.count(measurement.station).desc())\
                   .first()[0]
 
-# Define Flask routes
+# define Flask routes
+
 @app.route('/')
 def home():
     return (
@@ -79,7 +85,7 @@ def tobs():
 def start(start):
     session = Session(engine)
 
-    # Try to parse the start date, return an error if the format is incorrect
+    # try to parse the start date, return an error if the format is incorrect
     try:
         start_date = dt.datetime.strptime(start, '%Y-%m-%d')
     except ValueError:
@@ -92,7 +98,7 @@ def start(start):
                         filter(measurement.date >= start_date).all()
     session.close()
 
-    # Check if data is found
+    # check if data is found
     if results[0][0] is None:
         return jsonify({"error": "No data found for the given start date."}), 404
 
@@ -106,7 +112,8 @@ def start(start):
 def start_end(start, end):
     session = Session(engine)
 
-    # Try to parse the start and end dates, return an error if the format is incorrect
+    # try to parse the start and end dates, return an error if the format is incorrect
+    
     try:
         start_date = dt.datetime.strptime(start, '%Y-%m-%d')
         end_date = dt.datetime.strptime(end, '%Y-%m-%d')
@@ -114,7 +121,8 @@ def start_end(start, end):
         session.close()
         return jsonify({"error": "Invalid date format. Please use YYYY-MM-DD."}), 400
 
-    # Ensure start_date is before end_date
+    # ensure start_date is before end_date
+
     if start_date > end_date:
         session.close()
         return jsonify({"error": "Start date must be before end date."}), 400
@@ -126,7 +134,8 @@ def start_end(start, end):
                                measurement.date <= end_date).all()
     session.close()
 
-    # Check if data is found
+    # check if data is found
+
     if results[0][0] is None:
         return jsonify({"error": "No data found for the given date range."}), 404
 
